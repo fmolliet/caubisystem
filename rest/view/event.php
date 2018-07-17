@@ -1,5 +1,4 @@
 <?php
-//http://serverconfig.hopto.org/rest/event.php?appkey=%s&type=%s&dtemp=%f&hum=%f&geo=%s&stemp=%f
 include "../control/Control.php";
 
 function getToObj($array)
