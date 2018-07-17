@@ -29,9 +29,7 @@ if(isset($_GET['appkey']) && isset($_GET['type']))
     }
     else
         echo '<h2><b>AppKey Invalida</b></h2>';
-    //header('Location:listar.php');
 }
 else
     echo '<h2><b>Está faltando chave de aplicação ou tipo de solicitação</b></h2>';
-
 ?>
