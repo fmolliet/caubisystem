@@ -1,35 +1,42 @@
 <?php
+//http://serverconfig.hopto.org/rest/event.php?appkey=%s&type=%s&dtemp=%f&hum=%f&geo=%s&stemp=%f
 include "../control/Control.php";
 
-function getToObj($array)
-{
-    $arr = [];
-    foreach($array as $k)
-    {
-        $arr[] = $k;
-    }
-    return $arr;
-}
 echo '<br /><br />';
-
 
 if(isset($_GET['appkey']) && isset($_GET['type']))
 {
-    $conteudoControl = new ConteudoControl();
-    if(!empty($conteudoControl->validate($_GET['appkey'])))
+    $Control = new control();
+    if(!empty($Control->validate($_GET['appkey'])))
     {
         switch($_GET['type']){
             case 'normal' :
-                $conteudoControl->normal($_GET);
+                $Control->normal($_GET);
+            break;
+            case 'critic':
+                $Control->critic($_GET);
             break;
             case 'geo':
-                $conteudoControl->critic($_GET);
+                // caso precise converter
+                //$_GET['lat'] = str_replace('.',',',$_GET['lat']);
+                //$_GET['lon'] = str_replace('.',',',$_GET['lon']);
+                $result = $Control->checkgeo($_GET['appkey']);
+                if(empty($result))
+                    $Control->creategeo($_GET);
+                else
+                {
+                    if(!$Control->compareGeo($_GET, $result))
+                       $Control->markGeo($_GET['appkey']);
+                }
+                
             break;
         }
     }
     else
         echo '<h2><b>AppKey Invalida</b></h2>';
+    //header('Location:listar.php');
 }
 else
     echo '<h2><b>Está faltando chave de aplicação ou tipo de solicitação</b></h2>';
+
 ?>
