@@ -11,6 +11,7 @@
 DHT dht(DHTPIN, DHTTYPE);
 
 // Verificar as pinagens https://www.filipeflop.com/blog/controlando-um-lcd-16x2-com-arduino/
+// https://playground.arduino.cc/Main/LiquidCrystal
 LiquidCrystal lcd(<pino RS>, <pino enable>, <pino D4>, <pino D5>, <pino D6>, <pino D7>); 
 
 
@@ -22,27 +23,41 @@ boolean started=false;
 
 void setup()
 {
-     Serial.begin(9600);
-     lcd.begin(16, 2);
-     Serial.println("Testando Shield GSM.");
-     Serial.println("DHTxx test!");
+    // Inicia seriais
+    Serial.begin(9600);
+    // Inicia lcd
+    lcd.begin(16, 2);
+    apresentacao();
+    // Inicia DHT
     dht.begin();
-     if (gsm.begin(2400)) {
-          Serial.println("\nstatus=PRONTO");
-          started=true;
-     } else Serial.println("\nstatus=IDLE");
+    Serial.println("DHT22 INIC");
+    
+    lcdStatus("DHT22 INIC");
+    Serial.println("Testando Shield GSM.");
+    lcdStatus("GSM INIC");
+    if (gsm.begin(2400)) {
+        Serial.println("\nstatus=PRONTO");
+        lcdStatus("GSM READY");
+        started=true;
+    } 
+    else {
+        Serial.println("\nstatus=IDLE");
+        lcdStatus("GSM IDLE");
+    }
 
-     if(started) {
+    delay(2000);
+
+    if(started) {
         if (inet.attachGPRS("internet.wind", "", ""))
             Serial.println("status=ATTACHED");
         else 
             Serial.println("status=ERROR");
 
-            delay(1000);
+        delay(1000);
 
-          gsm.SimpleWriteln("AT+CIFSR");
-          delay(5000);
-          gsm.WhileSimpleRead();
+        gsm.SimpleWriteln("AT+CIFSR");
+        delay(5000);
+        gsm.WhileSimpleRead();
      }
 };
 
@@ -58,11 +73,10 @@ void loop()
 
 char acessaSite(char url[500])
 {
-        char msg[50];
-        int numdata;
-        numdata=inet.httpGET("http://nextrest.hopto.org", 8080, url, msg, 50);
-        return msg;
-     }
+    char msg[50];
+    int numdata;
+    numdata=inet.httpGET("http://nextrest.hopto.org", 8080, url, msg, 50);
+    return msg;
 }
 
 float getTemp()
@@ -95,4 +109,23 @@ char montaURL(char appkey[33],char type[16])
     return url;
     //numdata=inet.httpGET("http://nextrest.hopto.org", 8080, url1, msg, 50);
     //dtemp=%f&hum=%f&id=%s&geo=%s&stemp=%f.
+}
+
+
+void apresentacao()
+{
+    lcd.clear();
+    lcd.setCursor(3, 0);
+    lcd.print("CAUBI");
+    lcd.setCursor(3, 1);
+    lcd.print("SYSTEM :3");
+    delay(20000);
+    lcd.clear();
+}
+
+void lcdStatus(char status[12])
+{
+    lcd.clear();
+    lcd.setCursor(3, 0);
+    lcd.print(status);
 }
