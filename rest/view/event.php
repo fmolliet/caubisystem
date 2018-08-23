@@ -6,7 +6,7 @@ echo '<br /><br />';
 if(isset($_GET['appkey']) && isset($_GET['type']))
 {
     $Control = new control();
-    if(!empty($Control->validate($_GET['appkey'])))
+    if(!empty($Control->validate($_GET['appkey'])) ||  !empty(preg_match('(normal|critic|geo)', $_GET['type'])) )
     {
         switch($_GET['type']){
             case 'normal' :
@@ -32,10 +32,16 @@ if(isset($_GET['appkey']) && isset($_GET['type']))
         }
     }
     else
-        echo '<h2><b>AppKey Invalida</b></h2>';
-    //header('Location:listar.php');
+    {
+        include('404.php');
+        echo '<h2><b>Appkey ou tipo de solicitação Inválida</b></h2>';
+        die();
+    }    
 }
 else
+{
+    include('404.php');
     echo '<h2><b>Está faltando chave de aplicação ou tipo de solicitação</b></h2>';
-
+    die();
+}
 ?>

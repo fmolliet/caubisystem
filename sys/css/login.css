@@ -1,0 +1,40 @@
+input[type=text], input[type=password] {
+    border-radius: 4px;    
+    border: 1px solid #555;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: darkgray; 
+    font-family: Montserrat, Roboto, serif;
+    overflow: hidden;
+}
+
+label {
+    font-size: 110%;
+    color: #383838;
+}
+
+input[type=button], input[type=submit], input[type=reset] {
+    background-color: #c0112f;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;   
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.centro{
+    padding: 5%;
+    border: 2px solid #c0112f;
+    margin: auto;
+    width: 30%;
+    border-radius: 10px;
+    background-color: #d1d1d1;
+}
+
+h2 {
+    color: white;
+}

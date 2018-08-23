@@ -1,0 +1,53 @@
+.interface{
+    align-content: center;
+    text-align: center;
+    width: auto;
+    padding: 2%;
+    border: 5px solid #555;
+    margin: auto;
+}
+
+.interfaceadmin{    
+    width: auto;
+    padding: 2%;
+    border: 5px solid #555;
+    margin: auto;
+}
+
+spam.obs{
+    font-size: 70%;
+    color: #383838;
+}
+
+input[type=button], input[type=submit], input[type=reset] {
+    background-color: #c0112f;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;   
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+label  {
+    font-size: 110%;
+    color: #383838;
+}
+
+select {
+    background-color: #c0112f;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    margin: 4px 2px;   
+    cursor: pointer;
+}
+
+
+input[type=text], input[type=password], input[type=email]  {
+    border-radius: 4px;    
+    border: 1px solid #555;
+    box-sizing: border-box;
+}

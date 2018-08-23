@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 18, 2018 at 04:16 AM
+-- Generation Time: Jul 17, 2018 at 09:09 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.4
 
@@ -65,36 +65,14 @@ INSERT INTO `clients` (`id`, `name`, `appkey`) VALUES
 
 CREATE TABLE `client_detail` (
   `client_id` int(10) NOT NULL,
-  `cpf` varchar(11) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `address` varchar(150) NOT NULL,
   `city` varchar(50) NOT NULL,
-  `state` varchar(2) NOT NULL,
-  `country` varchar(50) NOT NULL,
-  `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `state` varchar(50) NOT NULL,
+  `country` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `client_detail`
---
-
-INSERT INTO `client_detail` (`client_id`, `cpf`, `first_name`, `last_name`, `email`, `address`, `city`, `state`, `country`, `creation_date`) VALUES
-(1, '11122233344', 'Fabio', 'Molliet', 'fabiomolliet@test.com', 'Avenida teste, 204', 'São Paulo', 'SP', 'Brasil', '2018-07-18 01:56:58'),
-(2, '', '', '', '', '', '', '', 'Brasil', '2018-07-18 01:56:58');
-
---
--- Triggers `client_detail`
---
-DELIMITER $$
-CREATE TRIGGER `Generate_appkey` AFTER INSERT ON `client_detail` FOR EACH ROW BEGIN
-	DECLARE vUser varchar(50);
-	SELECT USER() INTO vUser;
-    insert into clients ( id, name , appkey ) values (NEW.client_id, NEW.first_name, MD5(NEW.client_id) );
-END
-$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -104,8 +82,9 @@ DELIMITER ;
 
 CREATE TABLE `critic_events` (
   `appkey` varchar(50) NOT NULL,
-  `status` varchar(10) NOT NULL,
-  `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `geolocation` point NOT NULL,
+  `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -120,9 +99,17 @@ CREATE TABLE `events` (
   `dtemp` float NOT NULL,
   `humidity` int(11) NOT NULL,
   `stemp` float NOT NULL COMMENT 'Static Temperature',
-  `alert` tinyint(1) NOT NULL DEFAULT '0',
   `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `events`
+--
+
+INSERT INTO `events` (`event_id`, `appkey`, `dtemp`, `humidity`, `stemp`, `datetime`) VALUES
+(2, 'c4ca4238a0b923820dcc509a6f75849b', 10, 80, 11.8, '2018-07-17 15:32:51'),
+(3, 'c4ca4238a0b923820dcc509a6f75849b', 11, 80, 12, '2018-07-17 17:46:25'),
+(4, 'c4ca4238a0b923820dcc509a6f75849b', 15, 70, 13, '2018-07-17 19:08:13');
 
 -- --------------------------------------------------------
 
@@ -132,10 +119,12 @@ CREATE TABLE `events` (
 
 CREATE TABLE `locations` (
   `appkey` varchar(50) NOT NULL,
-  `lon` double NOT NULL,
-  `lat` double NOT NULL,
+  `geolocation` point NOT NULL,
+  `latitude` double NOT NULL,
+  `longitude` double NOT NULL,
   `last_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `alert` tinyint(1) NOT NULL DEFAULT '0'
+  `static_lat` double DEFAULT NULL,
+  `static_lon` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -171,8 +160,7 @@ ALTER TABLE `clients`
 -- Indexes for table `client_detail`
 --
 ALTER TABLE `client_detail`
-  ADD PRIMARY KEY (`client_id`),
-  ADD UNIQUE KEY `cpf` (`cpf`);
+  ADD PRIMARY KEY (`client_id`);
 
 --
 -- Indexes for table `critic_events`
@@ -208,23 +196,23 @@ ALTER TABLE `status`
 -- AUTO_INCREMENT for table `client_detail`
 --
 ALTER TABLE `client_detail`
-  MODIFY `client_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `client_id` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `event_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `event_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `clients`
+-- Constraints for table `client_detail`
 --
-ALTER TABLE `clients`
-  ADD CONSTRAINT `clients_ibfk_1` FOREIGN KEY (`id`) REFERENCES `client_detail` (`client_id`);
+ALTER TABLE `client_detail`
+  ADD CONSTRAINT `client_detail_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`);
 
 --
 -- Constraints for table `critic_events`

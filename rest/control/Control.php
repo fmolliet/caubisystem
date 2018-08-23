@@ -64,5 +64,47 @@ class control{
 		$conteudo = new content();
 		return $conteudo->markgeo($appkey);
 	}
+
+
+	//////////////////////////
+	////  SITE Functions  //// 
+	//////////////////////////
+
+
+	function siteLogin($login, $senha){
+		$conteudo = new content();
+		return $conteudo->login($login, $senha);
+	}
+
+	function siteClient_reg($client_data)
+	{
+		$conteudo = new content();
+		return $conteudo->insert_client($client_data);
+	}
+
+	function siteClient_show_all(){
+		$conteudo = new content();
+		return $conteudo->bring_all_client();
+	}
+
+
+	//////////////////////////
+	/////  API Returns  //////
+	//////////////////////////
+
+	
+	function apiValidate($obj){
+		$conteudo = new content();
+		return $conteudo->apiValidate($obj);
+	}
+
+	function apiSearchById($obj){
+		$conteudo = new content();
+		return $conteudo->apiSearchId($obj);
+	}
+
+
+
+
 }
 ?>
