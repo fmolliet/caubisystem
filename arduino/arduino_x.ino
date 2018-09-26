@@ -2,7 +2,6 @@
 #include <SoftwareSerial.h>
 #include <Adafruit_Sensor.h>
 #include <LiquidCrystal.h>
-#include <string.h>
 #include <DHT.h>
 
 #define DHTONE 38
@@ -20,36 +19,53 @@ const char MACID[] = "C0000001";
 
 //Tutorial DHT22 https://www.filipeflop.com/blog/estacao-meteorologica-com-arduino/
 //DHT dht(DHTPIN, DHTTYPE);
-DHT dhtone(DHTONE,DHTTYPE);
-DHT dhttwo(DHTTWO,DHTTYPE);
-DHT dhttre(DHTTRE,DHTTYPE);
+DHT dht(DHTONE,DHTTYPE);
+DHT dht2(DHTTWO,DHTTYPE);
+DHT dht3(DHTTRE,DHTTYPE);
 
 // Verificar as pinagens https://www.filipeflop.com/blog/controlando-um-lcd-16x2-com-arduino/
 // https://playground.arduino.cc/Main/LiquidCrystal
-LiquidCrystal lcd(22, 24, 26, 28, 30, 32, 34); 
+//LiquidCrystal lcd(22, 24, 26, 28, 30, 32, 34); 
 
+int timer = millis();
+
+float t, h;
+
+char buff_h1[6];
+char buff_t1[6];
+char buff_h2[6];
+char buff_t2[6];
+
+char h1_string[6];
+char t1_string[6];
+char h2_string[6];
+char t2_string[6];
+char dht_string[6];
 
 SoftwareSerial mySerial(PIN_TX,PIN_RX);
 DFRobot_SIM808 sim808(&mySerial);
 //char http_cmd[] = "GET /rest/view/event.php?appkey=c4ca4238a0b923820dcc509a6f75849b&type=normal&mac_id=C0000001&stemp=14.0&hum=50.0&eng=10&dtemp=14.3 HTTP/1.1\r\nHost: 179.208.244.198:8080\r\n\r\n";
 char bufferr[512];
 
-float getTemp()
+
+void getTemp()
 {
     delay(2000);
-    float t = dhtone.readTemperature();
+    t = dht.readTemperature();
     //t += dht.readTemperature();
     //t += dht.readTemperature();
-    return t;
+    //return t;
+    delay(2000);
 }
 
-float getHum()
+void getHum()
 {
     delay(2000);
-    float h = dhtone.readHumidity();
+    h = dht.readHumidity();
     // h += dht.readHumidity();
     //h += dht.readHumidity();
-    return h;
+    //return h;
+    delay(2000);
 }
 
   
@@ -57,9 +73,9 @@ void setup() {
   mySerial.begin(9600);
   Serial.begin(9600);
   //dht.begin();
-  dhtone.begin();
+  dht.begin();
   //dhr.begin();
-  lcd.begin(16, 2);
+  //lcd.begin(16, 2);
 //  apresentacao();
     // pino de entrada para porta
   pinMode(PIN_DR, INPUT);
@@ -111,6 +127,7 @@ void setup() {
 int status_anterior = 1;
 
 void loop() {
+    
     /*
     int status_atual = digitalRead(PIN_DR);
     if (status_anterior == 1 && status_atual == 0) {    // se está aberta...
@@ -121,38 +138,43 @@ void loop() {
     }
     status_anterior = status_atual;
     */
-    sim808.send(normal_env(APPKEY,"normal",MACID), sizeof(normal_env(APPKEY,"normal",MACID))-1);
-   Serial.println(getHum());
-   Serial.println(getTemp());
+
+    dtostrf(h,5, 2, buff_h1);
+    //h1_string = String(buff_h1);
+    dtostrf(t,5, 2, buff_t1);
+    //t1_string = String(buff_t1);
+    
+    //sim808.send(normal_env(APPKEY,"normal",MACID), sizeof(normal_env(APPKEY,"normal",MACID))-1);
+   Serial.println(buff_h1);
+   Serial.println(h);
+   Serial.println(buff_t1);
+   Serial.println(t);
     delay(3000);
  
 }
 
 
 char normal_env(char appkey[], char type[], char machine_id[]){
-    char url[] = "GET /rest/view/event.php?appkey=" + ;
-    //strcpy( url1, url);
-    //char humidade[] = getHum();
-    char temperatura[80] = String(getTemp());
-    /*
+    getTemp();
+    getHum();
+    char url[180]; 
+    //String http = "GET /rest/view/event.php?appkey=" + appkey + "&type=" + type +  "&mac_id=" + machine_id + "&stemp=" + String(t) + "&hum=" + String(h) + "&dtemp=10";
+    strcat(url, "GET /rest/view/event.php?appkey=");
     strcat( url, appkey);
     strcat( url, "&type=");   
     strcat( url, type);  
     strcat( url, "&mac_id=");
     strcat( url, machine_id); 
     strcat( url, "&stemp=");   
-    strcat( url, temperatura);
+    strcat( url, t1_string);
     strcat( url, "&hum=");   
-    strcat( url, humidade );
+    strcat( url, h1_string );
     strcat( url, "&eng=");   
     strcat( url, "0.500" );
     strcat( url, "&dtemp=");   
     strcat( url, "5.5" );
-    */
     //FINALIZA
     strcat( url, " HTTP/1.1\r\nHost: 179.208.244.198:8080\r\n\r\n");  
-
-    //GET &stemp=14.0&hum=50.0&eng=10&dtemp=14.3";
     return url;
 }
 
