@@ -48,17 +48,8 @@ void setup()
     delay(2000);
 
     if(started) {
-        if (inet.attachGPRS("internet.wind", "", ""))
-            Serial.println("status=ATTACHED");
-        else 
-            Serial.println("status=ERROR");
-
-        delay(1000);
-
-        gsm.SimpleWriteln("AT+CIFSR");
-        delay(5000);
-        gsm.WhileSimpleRead();
-     }
+        
+    }
 };
 
 void loop()
@@ -71,7 +62,7 @@ void loop()
 ////// FUNÇÕES //////
 /////////////////////
 
-char acessaSite(char url[500])
+char acessaSite(char url[])
 {
     char msg[50];
     int numdata;
@@ -94,10 +85,10 @@ float getHum()
 }
 
 /* Exemplo concat de URL */
-char montaURL(char appkey[33],char type[16])
+char montaURL(char appkey[],char type[])
 {
     //url1[0]=0;
-    char url[500] = "/rest/insdata.php?appkey=";
+    char url[] = "/rest/insdata.php?appkey=";
     //strcpy( url1, url);
     strcat( url, appkey);
     strcat( url, "&type=");   
@@ -123,7 +114,7 @@ void apresentacao()
     lcd.clear();
 }
 
-void lcdStatus(char status[12])
+void lcdStatus(char status[])
 {
     lcd.clear();
     lcd.setCursor(3, 0);

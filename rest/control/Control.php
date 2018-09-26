@@ -100,7 +100,7 @@ class control{
 
 	function apiSearchById($obj){
 		$conteudo = new content();
-		return $conteudo->apiSearchId($obj);
+		return $conteudo->apiSearchByAppKey($obj);
 	}
 
 
