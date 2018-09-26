@@ -1,7 +1,21 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+ini_set('max_execution_time','0');
+ini_set('mysql.connect_timeout', 300);
+ini_set('default_socket_timeout', 300);
+ignore_user_abort(true);
+error_reporting(E_ALL);
+
+header('Content-Type: text/html');
+
 include "../control/Control.php";
 
 echo '<br /><br />';
+echo $_GET['appkey'];
+print_r(" é a chave de aplicaç]ao");
+
+echo $_GET['type'];
 
 if(isset($_GET['appkey']) && isset($_GET['type']))
 {

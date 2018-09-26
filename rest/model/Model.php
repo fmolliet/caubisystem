@@ -8,7 +8,7 @@ class content extends Conexao{
     	$sql = "INSERT INTO events( appkey, id_mac ,dtemp, humidity, stemp, energy) VALUES (:appkey,:mac,:dtemp,:hum,:stemp,:energy)";
     	$consulta = Conexao::prepare($sql);
 		$consulta->bindValue('appkey',  $obj['appkey']);
-		$consulta->bindValue('mac',  $obj['mac']);
+		$consulta->bindValue('mac',  $obj['mac_id']);
         $consulta->bindValue('dtemp', $obj['dtemp']);
         $consulta->bindValue('hum' , $obj['hum']);
 		$consulta->bindValue('stemp' , $obj['stemp']);
@@ -97,6 +97,14 @@ class content extends Conexao{
 			LEFT JOIN clients AS c 
 			ON p.client_id = c.id";
 		$consulta = Conexao::prepare($sql);
+		$consulta->execute();
+		return $consulta->fetchAll();
+	}
+
+	public function apiSearchByAppKey($data){
+		$sql = "SELECT * FROM clients WHERE appkey = :apk";
+		$consulta = Conexao::prepare($sql);
+		$consulta->bindValue('apk',  $data['appkey']);
 		$consulta->execute();
 		return $consulta->fetchAll();
 	}
