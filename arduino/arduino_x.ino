@@ -76,8 +76,8 @@ void setup() {
   dht.begin();
   //dhr.begin();
   //lcd.begin(16, 2);
-//  apresentacao();
-    // pino de entrada para porta
+  //apresentacao();
+  //pino de entrada para porta
   pinMode(PIN_DR, INPUT);
 
 
@@ -87,23 +87,58 @@ void setup() {
     }
     delay(2000);  
    //Tenta conectar na internet
+   /*
     while(!sim808.join(F("cmnet"))) {
       Serial.println("[ERROR]: Falha ao entrar na conexão do SSIM808");
       delay(2000);
     }
-    
+    */
+
+    /*
     Serial.print("O endereço IP é: ");
     Serial.println(sim808.getIPAddress()); 
-    
+    */
     if(!sim808.connect(TCP,"179.208.244.198", 8080)) {
       Serial.println("[ERROR]: Conexao com erro");
     }else{
       Serial.println("Connectado com o rest com sucesso");
     }
     delay(2000);
+
+    getTemp();
+    getHum();
+
+    /*
+      Passo a passo processamento de URL
+    */
+    
+    char url[180]; 
+    strcat(url, "GET /rest/view/event.php?appkey=");
+    strcat( url, APPKEY);
+    Serial.println(url);
+    strcat( url, "&type=");   
+    strcat( url, "normal");  
+    strcat( url, "&mac_id=");
+    strcat( url, MACID); 
+    Serial.println(url);
+    strcat( url, "&stemp=");   
+    strcat( url, (char)t);
+    strcat( url, "&hum=");   
+    strcat( url, (char)h );
+    strcat( url, "&eng=");   
+    strcat( url, "0.500" );
+    strcat( url, "&dtemp=");   
+    strcat( url, "5.5" );
+    Serial.println(url);
+    //FINALIZA
+    strcat( url, " HTTP/1.1\r\nHost: 179.208.244.198:8080\r\n\r\n");  
+    Serial.println(url);
+
+
     
     Serial.println("Aguardando retorno ...");
     //sim808.send(http_cmd, sizeof(http_cmd)-1);
+    sim808.send(url, sizeof(url)-1);
     /* DEBUG De RETORNO
     while (true) {
         int ret = sim808.recv(buffer, sizeof(buffer)-1);
@@ -139,15 +174,15 @@ void loop() {
     status_anterior = status_atual;
     */
 
-    dtostrf(h,5, 2, buff_h1);
+    //dtostrf(h,5, 2, buff_h1);
     //h1_string = String(buff_h1);
-    dtostrf(t,5, 2, buff_t1);
+    //dtostrf(t,5, 2, buff_t1);
     //t1_string = String(buff_t1);
     
-    //sim808.send(normal_env(APPKEY,"normal",MACID), sizeof(normal_env(APPKEY,"normal",MACID))-1);
-   Serial.println(buff_h1);
+   //sim808.send(normal_env(APPKEY,"normal",MACID), sizeof(normal_env(APPKEY,"normal",MACID))-1);
+   //Serial.println(buff_h1);
    Serial.println(h);
-   Serial.println(buff_t1);
+   //Serial.println(buff_t1);
    Serial.println(t);
     delay(3000);
  
@@ -166,9 +201,9 @@ char normal_env(char appkey[], char type[], char machine_id[]){
     strcat( url, "&mac_id=");
     strcat( url, machine_id); 
     strcat( url, "&stemp=");   
-    strcat( url, t1_string);
+    strcat( url, (char)t);
     strcat( url, "&hum=");   
-    strcat( url, h1_string );
+    strcat( url, (char)h );
     strcat( url, "&eng=");   
     strcat( url, "0.500" );
     strcat( url, "&dtemp=");   
