@@ -29,7 +29,7 @@
                 break;
         }
     }
-      ?>
+      ?> 
       <html>
           <head>
             <title>Clients Manager</title>
