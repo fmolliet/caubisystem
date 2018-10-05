@@ -98,11 +98,20 @@ class control{
 		return $conteudo->apiValidate($obj);
 	}
 
-	function apiSearchById($obj){
+	function apiMachinesByAppKey($obj){
 		$conteudo = new content();
-		return $conteudo->apiSearchByAppKey($obj);
+		return $conteudo->apiMachinesByAppKey($obj);
 	}
 
+	function apiSearchById($obj){
+		$conteudo = new content();
+		return $conteudo->apiSearchById($obj);
+	}
+
+	function apiBringAllClients(){
+		$conteudo = new content();
+		return $conteudo->apiBringAllClients();
+	}
 
 
 

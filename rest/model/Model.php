@@ -5,7 +5,7 @@ include dirname(dirname(__FILE__)) .'/conexao/Conexao.php';
 class content extends Conexao{
     
     public function nevent($obj){
-    	$sql = "INSERT INTO events( appkey, id_mac ,dtemp, humidity, stemp, energy) VALUES (:appkey,:mac,:dtemp,:hum,:stemp,:energy)";
+    	$sql = "INSERT INTO events( appkey, machine_id ,dtemp, humidity, stemp, energy) VALUES (:appkey,:mac,:dtemp,:hum,:stemp,:energy)";
     	$consulta = Conexao::prepare($sql);
 		$consulta->bindValue('appkey',  $obj['appkey']);
 		$consulta->bindValue('mac',  $obj['mac_id']);
@@ -17,12 +17,11 @@ class content extends Conexao{
 	}
 
 	public function cevent($obj){
-    	$sql = "INSERT INTO events( appkey, `status`, lon, lat) VALUES (:appkey, :e_status,:lon,:lat)";
-    	$consulta = Conexao::prepare($sql);
+    	$sql = "INSERT INTO critical_events( machine_id, appkey, msg, status) VALUES (:mac, :appkey, :msg, 1)";
+		$consulta = Conexao::prepare($sql);
+		$consulta->bindValue('mac',  $obj['mac_id']);
         $consulta->bindValue('appkey',  $obj['appkey']);
-        $consulta->bindValue('e_status', $obj['dtemp']);
-		$consulta->bindValue('lon' , $obj['lon']);
-		$consulta->bindValue('lat' , $obj['lat']);
+        $consulta->bindValue('msg', $obj['msg']);
     	return $consulta->execute();
 	}
 
@@ -57,10 +56,10 @@ class content extends Conexao{
 	}
 
 	public function insertgeo($obj){
-    	$sql = "INSERT INTO events( appkey, lon, lat) VALUES (:appkey, :e_status,:lon,:lat)";
-    	$consulta = Conexao::prepare($sql);
+    	$sql = "INSERT INTO locations (machine_id, appkey, lon, lat) VALUES (:mac,:appkey, :lon,:lat)";
+		$consulta = Conexao::prepare($sql);
+		$consulta->bindValue('mac',  $obj['mac_id']);
         $consulta->bindValue('appkey',  $obj['appkey']);
-        $consulta->bindValue('e_status', $obj['dtemp']);
 		$consulta->bindValue('lon' , $obj['lon']);
 		$consulta->bindValue('lat' , $obj['lat']);
     	return $consulta->execute();
@@ -77,7 +76,7 @@ class content extends Conexao{
 	}
 
 	public function insert_client($data){
-    	$sql = "INSERT INTO `client_detail` (cpf, first_name, last_name, email, business, address, city, state, country) VALUES (:cpf, :fname, :sname, :email, :business, :endereco, :city, :estado, :pais)";
+    	$sql = "INSERT INTO `client_detail` (cnpj, first_name, last_name, email, business, address, city, state, country) VALUES (:cpf, :fname, :sname, :email, :business, :endereco, :city, :estado, :pais)";
 		$consulta = Conexao::prepare($sql);
         $consulta->bindValue('cpf',  $data['cpf']);
         $consulta->bindValue('fname', $data['fname']);
@@ -92,7 +91,7 @@ class content extends Conexao{
 	}
 
 	public function bring_all_client(){
-		$sql = "SELECT p.client_id, c.appkey, p.cpf, p.first_name, p.last_name, p.email, p.business, p.address 
+		$sql = "SELECT p.client_id, c.appkey, p.cnpj, p.first_name, p.last_name, p.email, p.business, p.address 
 			FROM client_detail as p 
 			LEFT JOIN clients AS c 
 			ON p.client_id = c.id";
@@ -101,12 +100,42 @@ class content extends Conexao{
 		return $consulta->fetchAll();
 	}
 
-	public function apiSearchByAppKey($data){
-		$sql = "SELECT * FROM clients WHERE appkey = :apk";
+	public function apiMachinesByAppKey($data){
+		$sql = "SELECT * FROM machines WHERE client_appkey = :apk";
 		$consulta = Conexao::prepare($sql);
 		$consulta->bindValue('apk',  $data['appkey']);
 		$consulta->execute();
 		return $consulta->fetchAll();
 	}
+
+	public function apiSearchById($data){
+		$sql = "SELECT * FROM clients WHERE appkey = :appkey";
+		$consulta = Conexao::prepare($sql);
+		$consulta->bindValue('appkey',  $data['appkey']);
+		$consulta->execute();
+		return $consulta->fetchAll();
+	}
+
+	public function apiBringAllClients(){
+		$sql = "SELECT p.client_id, c.appkey, p.cnpj, p.email, p.business, p.address 
+			FROM client_detail as p 
+			LEFT JOIN clients AS c 
+			ON p.client_id = c.client_id";
+		$consulta = Conexao::prepare($sql);
+		$consulta->execute();
+		return $consulta->fetchAll();
+	}
+
+	/*
+	public function apiBringAllClients(){
+		$sql = "SELECT p.client_id, c.appkey, p.cnpj, p.email, p.business, p.address 
+			FROM client_detail as p 
+			LEFT JOIN clients AS c 
+			ON p.client_id = c.client_id";
+		$consulta = Conexao::prepare($sql);
+		$consulta->execute();
+		return $consulta->fetchAll();
+	}
+	*/
 }
 ?>
