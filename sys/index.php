@@ -45,7 +45,7 @@
           <body background="img/bg.jpg" styles="filter:blur(5px);">
             
                 <ul>
-                    <li><spam>Bem-Vindo, <?=ucfirst($login_cookie)?></spam></li>
+                    <li><span>Bem-Vindo, <?=ucfirst($login_cookie)?></span></li>
                     <li><a href="index.php?cmd=cadastro">Cadastrar Cliente</a></li>
                     <li><a href="index.php?cmd=search">Buscar Cliente</a></li>
                     <li><a href="index.php?cmd=list">Ver Clientes</a></li>

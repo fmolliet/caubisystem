@@ -15,7 +15,7 @@ li {
     border-right: 1px solid #bbb;
 }
 
-li spam {
+li span {
     display: block;
     padding: 8px 16px;
     text-decoration: none;
