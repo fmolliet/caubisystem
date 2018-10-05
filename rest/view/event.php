@@ -11,11 +11,11 @@ header('Content-Type: text/html');
 
 include "../control/Control.php";
 
-echo '<br /><br />';
-echo $_GET['appkey'];
-print_r(" é a chave de aplicaç]ao");
+//echo '<br /><br />';
+//echo $_GET['appkey'];
+//print_r(" é a chave de aplicação");
 
-echo $_GET['type'];
+//echo $_GET['type'];
 
 if(isset($_GET['appkey']) && isset($_GET['type']))
 {
@@ -30,9 +30,6 @@ if(isset($_GET['appkey']) && isset($_GET['type']))
                 $Control->critic($_GET);
             break;
             case 'geo':
-                // caso precise converter
-                //$_GET['lat'] = str_replace('.',',',$_GET['lat']);
-                //$_GET['lon'] = str_replace('.',',',$_GET['lon']);
                 $result = $Control->checkgeo($_GET['appkey']);
                 if(empty($result))
                     $Control->creategeo($_GET);
